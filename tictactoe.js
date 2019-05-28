@@ -87,7 +87,7 @@ function flipcurrent() {
         currentPlayer = "X";
     }
 }
-
+//reset button is pressed
 function resetGame() {
     if (resetGame === "yes"){
         $('.col').empty();
