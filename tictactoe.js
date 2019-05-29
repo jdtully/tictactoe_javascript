@@ -4,10 +4,11 @@ let xs = []
 let os = []
 let status = "play on"
 let gameOver = false
+
 //set X or O flag
 let currentPlayer = "X"
 
-$('#status').html("New game! X goes first!.")
+messaging("start")
 //let currentPlayer = "X"
 //decide where  user clicked
 $('.col').click(function() {
@@ -17,9 +18,11 @@ $('.col').click(function() {
     $this =$(this);
     const cellnum = $this.data("cellnum");
     console.log("player picked " + cellnum)
-    
+    //Check to see that square is available
+    //this uses a index position of -1 to indicate
+    //false
     if (grid.indexOf(cellnum) === -1) {
-        $('#status').html("That spot is taken.");
+        messaging("taken");
     }
     else{
         console.log("cell available")
@@ -36,28 +39,20 @@ $('.col').click(function() {
             currentPlays=os
         }
 
-        if (ifwinner(currentPlays)) {
-           
+        if (ifwinner(currentPlays)) {           
             gameOver = true
-            $('#status').html("Game is over " + currentPlayer + " wins!");                
-            console.log ('winner is ' + currentPlayer)
+            messaging("winner");
         }
         else{
             flipcurrent(); 
-            $('#status').html("Its " + currentPlayer + "'s turn!");        
+            messaging("flip")     
         } 
     }
 });
 $("#restart").on ("click",(function() {
-    $('.col').empty();
-    grid =  [1,2,3,4,5,6,7,8,9]
-    xs = []
-    os = []
-    gameOver = false
-    currentPlayer = "X"
-    console.log("reset Clicked");
-    $('#status').html("New game! X goes first!.");
-}));  
+    resetGame();
+    messaging("reset");
+ }));  
 
 //check to see if  the space is taken
 function cellAvailable(cellnum) {
@@ -89,29 +84,46 @@ function flipcurrent() {
 }
 //reset button is pressed
 function resetGame() {
-    if (resetGame === "yes"){
-        $('.col').empty();
-        grid =  [1,2,3,4,5,6,7,8,9]
-        xs = []
-        os = []
-        gameOver = false
-        currentPlayer = "X"
+    $('.col').empty();
+    grid =  [1,2,3,4,5,6,7,8,9]
+    xs = []
+    os = []
+    gameOver = false
+    currentPlayer = "X"
+    ;
+    }
+ 
+
+// message handler
+function messaging(message) {
+    switch (message) {
+        case "reset":
+            console.log("reset Clicked");
+            $('#status').html("New game! X goes first!.");
+            break;
+
+        case "winner": 
+            console.log ('winner is ' + currentPlayer);
+            $('#status').html("Game is over " + currentPlayer + " wins!");             
+            break;
+
+        case "flip":
+            $('#status').html("Its " + currentPlayer + "'s turn!");  
+            break;
+
+        case "taken":
+            $('#status').html("That spot is taken.");
+            break;
+
+        case "start":
+            $('#status').html("New game! X goes first!.");
+            break;
+        
     }
 }
 
-// Status handler
-//function //(status,currentPlayer){
-//    if (status(gameOver,currentPlayer)) {
- //       $("#status").html(currentPlayer + "\n Is the winner")
- //   }
- //   else if (status(status,currentPlayer)) {
- //       $("#status").html("It's " + currentPlayer + "'s \n turn to play")
- //   }
-//
- //   else (status(taken,currentPlayer)) {
-//    $("#status").html(currentPlayer + "That spot is taken, \n Please try again")
- //   };
-//}
+
+
 
 //detect winning play
 function ifwinner(plays) {
